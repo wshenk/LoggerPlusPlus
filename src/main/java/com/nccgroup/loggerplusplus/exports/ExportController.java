@@ -32,6 +32,8 @@ public class ExportController {
         this.exporters.put(HARExporter.class, new HARExporter(this, preferences));
         this.exporters.put(Base64Exporter.class, new Base64Exporter(this, preferences));
         this.exporters.put(ElasticExporter.class, new ElasticExporter(this, preferences));
+        this.exporters.put(S3Exporter.class, new S3Exporter(this, preferences));
+
     }
 
     public HashMap<Class<? extends LogExporter>, LogExporter> getExporters() {
