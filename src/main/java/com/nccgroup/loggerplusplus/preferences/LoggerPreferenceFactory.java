@@ -110,6 +110,11 @@ public class LoggerPreferenceFactory extends PreferenceFactory {
         prefs.registerSetting(PREF_SAVED_FIELD_SELECTIONS, new TypeToken<LinkedHashMap<String, LinkedHashMap<LogEntryField, Boolean>>>() {
         }.getType(), new LinkedHashMap<>(), Preferences.Visibility.GLOBAL);
 
+        prefs.registerSetting(PREF_S3_AWS_ACCESS_KEY_ID, String.class, "");
+        prefs.registerSetting(PREF_S3_AWS_ACCESS_KEY_SECRET, String.class, "");
+        prefs.registerSetting(PREF_S3_REGION, String.class, "us-east-1");
+        prefs.registerSetting(PREF_S3_BUCKET_NAME, String.class, "");
+
         prefs.registerSetting(PREF_AUTO_SAVE, Boolean.class, false, Preferences.Visibility.VOLATILE);
         prefs.registerSetting(PREF_AUTO_SCROLL, Boolean.class, true, Preferences.Visibility.VOLATILE);
 

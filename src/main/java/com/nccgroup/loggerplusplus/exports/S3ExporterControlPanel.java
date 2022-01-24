@@ -2,12 +2,14 @@ package com.nccgroup.loggerplusplus.exports;
 
 import com.coreyd97.BurpExtenderUtilities.Alignment;
 import com.coreyd97.BurpExtenderUtilities.PanelBuilder;
+import com.nccgroup.loggerplusplus.LoggerPlusPlus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.PrintWriter;
 import java.util.concurrent.ExecutionException;
 
 public class S3ExporterControlPanel extends JPanel {
@@ -25,9 +27,13 @@ public class S3ExporterControlPanel extends JPanel {
         this.s3Exporter = s3Exporter;
 
         this.setLayout(new BorderLayout());
+
         JButton showConfigDialogButton = new JButton(new AbstractAction("Configure S3 Exporter") {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                new S3ExporterConfigDialog(LoggerPlusPlus.instance.getLoggerFrame(), s3Exporter).setVisible(true);
+
 
             }
         });
@@ -47,9 +53,9 @@ public class S3ExporterControlPanel extends JPanel {
                         boolean success = false;
                         try {
                             if (exportButton.isSelected()) {
-                                //enableExporter();
+                                enableExporter();
                             } else {
-                                //disableExporter();
+                                disableExporter();
                             }
                             success = true;
                         }catch (Exception e){
@@ -101,16 +107,15 @@ public class S3ExporterControlPanel extends JPanel {
     }
 
     private void enableExporter() throws Exception {
-        //this.elasticExporter.getExportController().enableExporter(this.elasticExporter);
+        this.s3Exporter.getExportController().enableExporter(this.s3Exporter);
     }
 
     private void disableExporter() throws Exception {
-        //this.elasticExporter.getExportController().disableExporter(this.elasticExporter);
+        this.s3Exporter.getExportController().disableExporter(this.s3Exporter);
     }
 
     private boolean isExporterEnabled() {
-        //return this.elasticExporter.getExportController().getEnabledExporters().contains(this.elasticExporter);
-        return true;
+        return this.s3Exporter.getExportController().getEnabledExporters().contains(this.s3Exporter);
     }
 
 }
