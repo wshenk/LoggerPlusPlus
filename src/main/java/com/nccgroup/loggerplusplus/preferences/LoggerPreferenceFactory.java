@@ -116,6 +116,8 @@ public class LoggerPreferenceFactory extends PreferenceFactory {
         prefs.registerSetting(PREF_S3_BUCKET_NAME, String.class, "");
         prefs.registerSetting(PREF_S3_PREFIX, String.class, "");
         prefs.registerSetting(PREF_S3_DELAY, Integer.class, 120);
+        prefs.registerSetting(PREF_S3_FILTER, String.class, "", Preferences.Visibility.GLOBAL);
+        prefs.registerSetting(PREF_S3_FILTER_PROJECT_PREVIOUS, String.class, null, Preferences.Visibility.PROJECT);
         prefs.registerSetting(PREF_PREVIOUS_S3_FIELDS, new TypeToken<List<LogEntryField>>() {
         }.getType(), new ArrayList<LogEntry>());
 

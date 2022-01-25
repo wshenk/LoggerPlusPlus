@@ -64,6 +64,9 @@ public class S3ExporterConfigDialog extends JDialog {
             }
         });
 
+        JTextField filterField = PanelBuilder.createPreferenceTextField(preferences, PREF_S3_FILTER);
+        filterField.setMinimumSize(new Dimension(600, 0));
+
         ComponentGroup credentialGroup = new ComponentGroup(ComponentGroup.Orientation.VERTICAL, "AWS Credentials");
         credentialGroup.addComponentWithLabel("AWS ACCESS KEY ID: ", s3AccessKeyIdField);
         credentialGroup.addComponentWithLabel("AWS ACCESS KEY SECRET: ", s3AccessKeySecretField);
@@ -75,7 +78,9 @@ public class S3ExporterConfigDialog extends JDialog {
 
         ComponentGroup miscGroup = new ComponentGroup(ComponentGroup.Orientation.VERTICAL, "Misc");
         miscGroup.addComponentWithLabel("Upload Frequency (Seconds): ", s3DelaySpinner);
+        miscGroup.addComponentWithLabel("Log Filter: ", filterField);
         miscGroup.addComponentWithLabel("Exported Fields: ", configureFieldsButton);
+
 
         PanelBuilder panelBuilder = new PanelBuilder();
         panelBuilder.setComponentGrid(new JComponent[][]{

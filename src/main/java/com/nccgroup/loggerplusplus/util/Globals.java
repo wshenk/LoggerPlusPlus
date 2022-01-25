@@ -69,6 +69,7 @@ public class Globals {
     public static final String PREF_S3_AWS_ACCESS_KEY_ID = "s3AWSAccessKeyId";
     public static final String PREF_S3_AWS_ACCESS_KEY_SECRET = "s3AWSAccessKeySecret";
     public static final String PREF_S3_FILTER = "s3Filter";
+    public static final String PREF_S3_FILTER_PROJECT_PREVIOUS = "s3FilterProjectPrevious";
     public static final String PREF_S3_DELAY = "s3Delay";
     public static final String PREF_PREVIOUS_S3_FIELDS = "previousS3Fields";
     public static final String PREF_LOG_OTHER_LIVE = "otherToolLiveLogging";
