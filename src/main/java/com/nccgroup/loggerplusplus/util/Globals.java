@@ -65,10 +65,12 @@ public class Globals {
     public static final String PREF_ELASTIC_AUTOSTART_PROJECT = "elasticAutostartProject";
     public static final String PREF_S3_REGION = "s3Region";
     public static final String PREF_S3_BUCKET_NAME = "s3BucketName";
+    public static final String PREF_S3_PREFIX = "s3Prefix";
     public static final String PREF_S3_AWS_ACCESS_KEY_ID = "s3AWSAccessKeyId";
     public static final String PREF_S3_AWS_ACCESS_KEY_SECRET = "s3AWSAccessKeySecret";
     public static final String PREF_S3_FILTER = "s3Filter";
     public static final String PREF_S3_DELAY = "s3Delay";
+    public static final String PREF_PREVIOUS_S3_FIELDS = "previousS3Fields";
     public static final String PREF_LOG_OTHER_LIVE = "otherToolLiveLogging";
     public static final String PREF_FILTER_HISTORY = "filterHistory";
     public static final String PREF_AUTO_SAVE = "autoSave";

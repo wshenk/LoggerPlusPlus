@@ -5,10 +5,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.coreyd97.BurpExtenderUtilities.Preferences;
 import com.nccgroup.loggerplusplus.logentry.LogEntry;
+import com.nccgroup.loggerplusplus.logentry.LogEntryField;
+import com.nccgroup.loggerplusplus.util.Globals;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,12 +27,16 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
 
     private final ScheduledExecutorService executorService;
 
+    private List<LogEntryField> fields;
+
+
     private BasicAWSCredentials awsCredentials;
     private AmazonS3 s3Client;
 
     protected S3Exporter(ExportController exportController, Preferences preferences) {
         super(exportController, preferences);
         executorService = Executors.newScheduledThreadPool(1);
+        this.fields = new ArrayList<>(preferences.getSetting(Globals.PREF_PREVIOUS_S3_FIELDS));
 
         controlPanel = new S3ExporterControlPanel(this);
     }
@@ -41,7 +48,8 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withRegion((String) preferences.getSetting(PREF_S3_REGION))
                 .build();
-        s3Client.putObject(preferences.getSetting(PREF_S3_BUCKET_NAME), "testkey.txt", "testcontent");
+        String testkey = preferences.getSetting(PREF_S3_PREFIX) + "testburpkey.txt";
+        s3Client.putObject(preferences.getSetting(PREF_S3_BUCKET_NAME), testkey, "testcontent");
     }
 
     @Override
@@ -71,5 +79,14 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
 
     public ExportController getExportController() {
         return this.exportController;
+    }
+
+    public List<LogEntryField> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<LogEntryField> fields) {
+        preferences.setSetting(Globals.PREF_PREVIOUS_S3_FIELDS, fields);
+        this.fields = fields;
     }
 }

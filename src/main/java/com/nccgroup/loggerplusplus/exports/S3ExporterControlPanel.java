@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.PrintWriter;
 import java.util.concurrent.ExecutionException;
 
 public class S3ExporterControlPanel extends JPanel {
