@@ -5,6 +5,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.coreyd97.BurpExtenderUtilities.Preferences;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.nccgroup.loggerplusplus.LoggerPlusPlus;
 import com.nccgroup.loggerplusplus.filter.logfilter.LogFilter;
 import com.nccgroup.loggerplusplus.filter.parser.ParseException;
@@ -94,7 +97,7 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
 
         pendingEntries = new ArrayList<>();
         connectFailedCounter = 0;
-        int delay = preferences.getSetting(Globals.PREF_ELASTIC_DELAY);
+        int delay = preferences.getSetting(Globals.PREF_S3_DELAY);
         indexTask = executorService.scheduleAtFixedRate(this::indexPendingEntries, delay, delay, TimeUnit.SECONDS);
     }
 
@@ -145,6 +148,12 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
         this.fields = fields;
     }
 
+    private Object formatValue(Object value){
+        if (value instanceof java.net.URL) return String.valueOf((java.net.URL) value);
+        else return value;
+    }
+
+
     private void indexPendingEntries(){
         try {
             if (this.pendingEntries.size() == 0) return;
@@ -156,14 +165,34 @@ public class S3Exporter extends AutomaticLogExporter implements ExportPanelProvi
             }
             try {
                 Gson gson = exportController.getLoggerPlusPlus().getGsonProvider().getGson();
-                s3Client.putObject(preferences.getSetting(PREF_S3_BUCKET_NAME), preferences.getSetting(PREF_S3_PREFIX) + String.valueOf(System.currentTimeMillis()) + ".json", gson.toJson(entriesInBulk));
+                //gson.toJson(entries, fileWriter);
+                //JsonElement pendingEntriesElement = gson.toJsonTree(entriesInBulk);
+                JsonArray jsonArray = new JsonArray();
+                JsonObject completeJsonObject = new JsonObject();
+                JsonObject partialJsonObject = new JsonObject();
+                for (LogEntry logEntry : entriesInBulk) {
+                    for (LogEntryField field : this.fields) {
+                        Object value = formatValue(logEntry.getValueByKey(field));
+                        String firstHalfOfLabel = field.getFullLabel().split("\\.")[0];
+                        String secondHalfOfLabel = field.getFullLabel().split("\\.")[1];
+                        if (!completeJsonObject.has(firstHalfOfLabel)){
+                            completeJsonObject.add(firstHalfOfLabel, new JsonObject());
+                        }
+                        partialJsonObject = completeJsonObject.get(firstHalfOfLabel).getAsJsonObject();
+                        partialJsonObject.addProperty(secondHalfOfLabel, value.toString());
+                        completeJsonObject.add(firstHalfOfLabel, partialJsonObject);
+                    }
+                    jsonArray.add(completeJsonObject);
+                }
+                String jsonResp = jsonArray.toString();
+                s3Client.putObject(preferences.getSetting(PREF_S3_BUCKET_NAME), preferences.getSetting(PREF_S3_PREFIX) + String.valueOf(System.currentTimeMillis()) + ".json", jsonResp);
                 connectFailedCounter = 0;
             } catch (Exception e) {
-                LoggerPlusPlus.callbacks.printError("Could not upload data to S3: " + e.getMessage());
+                LoggerPlusPlus.callbacks.printError("Could not upload data to S3: " + e.toString() + " "+ e.getMessage());
                 connectFailedCounter++;
                 if(connectFailedCounter > 5) {
                     JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(LoggerPlusPlus.instance.getLoggerMenu()),
-                            "S3 exporter could not connect after 5 attempts. S3 exporter shutting down...",
+                            "S3 exporter could not connect after 5 attempts. S3 exporter shutting down..." + e.getMessage(),
                             "S3 Exporter - Upload Failed", JOptionPane.ERROR_MESSAGE);
                     shutdown();
                 }
