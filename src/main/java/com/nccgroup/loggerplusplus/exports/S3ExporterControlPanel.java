@@ -31,10 +31,7 @@ public class S3ExporterControlPanel extends JPanel {
         JButton showConfigDialogButton = new JButton(new AbstractAction("Configure S3 Exporter") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 new S3ExporterConfigDialog(LoggerPlusPlus.instance.getLoggerFrame(), s3Exporter).setVisible(true);
-
-
             }
         });
 
